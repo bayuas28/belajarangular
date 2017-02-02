@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+		<meta charset="UTF-8">
+		<title>COBAIN CRUD DENGAN ANGULAR JS</title>
+		<!-- jQuery -->
+		<script src="../jquery/jquery-3.1.1.slim.min.js"></script>
+		<!-- Bootstrap -->
+		<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<!-- Angular JS -->
+		<script src="../angular/angular.min.js"></script>
+</head>
+<body ng-app="crudApp" ng-controller="crudCtrl">
+	<script type="text/javascript">
+		// buat module
+		var app = angular.module('crudApp',[]);
+
+		// buat controller
+		app.controller('crudCtrl', function($scope, $http){
+			
+$scope.data = {};
+
+			//request server
+			$http.get('http://localhost/resttes/index.php/service_server').then(function(response) {
+				// console.log(response);
+				// passing ke view
+				$scope.tes = response.data;
+				// $scope.NIP = 'tes';
+			});
+			
+			//method untuk tambah NIP
+			$scope.addNIP = function() {
+				var oi = {NIP : $scope.NIP};
+				console.log(oi);
+				//request server
+				$http.post('http://localhost/resttes/index.php/service_server',$scope.data).then(function(response) {
+					// console.log(response);
+					//passing ke view
+					$scope.msg = 'NIP Berhasil ditambahkan';
+					$scope.pilihNIP();
+				});
+			}
+
+			//method menampilkan NIP
+			$scope.pilihNIP = function(){
+				$http.get('http://localhost/resttes/index.php/service_server').then(function(response){
+
+				// passing ke view
+				$scope.tes = response.data;
+				});
+			}
+
+		});
+	</script>
+
+	<table class="table">
+		<tr>
+			<th>NIP</th>
+			<th>NAMA</th>
+		</tr>
+		<tr ng-repeat = "munculkan in tes">
+			<td>{{munculkan.NIP}}</td>
+			<td>{{munculkan.NAMA}}</td>
+		</tr>	
+
+		<p ng-if="msg" class="alert alert-success">{{msg}}</p>
+
+		<form>
+			<div class="form-group">
+				<input type="text" ng-model="data.NIP" class="form-control">
+			</div>
+			<div class="form-group">
+				<input type="button" value="Add" ng-click="addNIP()">
+			</div>
+		</form>
+	</table>
+</body>
